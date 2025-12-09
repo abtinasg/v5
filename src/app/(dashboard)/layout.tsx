@@ -15,14 +15,20 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const [credits, setCredits] = useState(0);
 
-  // Check if we're on the chat page
-  const isChatPage = pathname === '/chat';
+  // Check if we're on the chat page (now at root, but keep for legacy /chat route)
+  const isChatPage = pathname === '/chat' || pathname === '/';
 
   useEffect(() => {
+    // Redirect /chat to home since chat is now at root
+    if (pathname === '/chat') {
+      router.replace('/');
+      return;
+    }
+    
     if (status === 'unauthenticated') {
       router.push('/login');
     }
-  }, [status, router]);
+  }, [status, router, pathname]);
 
   useEffect(() => {
     if (session?.user?.id) {
