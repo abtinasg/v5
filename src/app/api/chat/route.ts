@@ -149,3 +149,42 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+// Delete a chat
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'لطفا وارد شوید' }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const chatId = searchParams.get('chatId');
+
+    if (!chatId) {
+      return NextResponse.json({ error: 'شناسه گفتگو الزامی است' }, { status: 400 });
+    }
+
+    // Verify chat belongs to user
+    const chat = await prisma.chat.findUnique({
+      where: { id: chatId, userId: session.user.id },
+    });
+
+    if (!chat) {
+      return NextResponse.json({ error: 'گفتگو یافت نشد' }, { status: 404 });
+    }
+
+    // Delete the chat (messages will cascade delete)
+    await prisma.chat.delete({
+      where: { id: chatId },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Delete chat error:', error);
+    return NextResponse.json(
+      { error: 'خطا در حذف گفتگو' },
+      { status: 500 }
+    );
+  }
+}

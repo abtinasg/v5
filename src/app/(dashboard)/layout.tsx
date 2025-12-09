@@ -1,7 +1,7 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { TopNav, BottomNav } from '@/components/ui/Navigation';
 
@@ -12,7 +12,11 @@ export default function DashboardLayout({
 }) {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const pathname = usePathname();
   const [credits, setCredits] = useState(0);
+
+  // Check if we're on the chat page
+  const isChatPage = pathname === '/chat';
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -44,8 +48,13 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <TopNav credits={credits} />
-      <main className="pt-16 pb-20">{children}</main>
-      <BottomNav />
+      <main className={isChatPage ? 'pt-16 lg:pb-0 pb-20' : 'pt-16 pb-20'}>
+        {children}
+      </main>
+      {/* Hide bottom nav on chat page for desktop */}
+      <div className={isChatPage ? 'lg:hidden' : ''}>
+        <BottomNav />
+      </div>
     </div>
   );
 }
