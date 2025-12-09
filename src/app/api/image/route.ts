@@ -55,11 +55,15 @@ export async function POST(request: NextRequest) {
     });
 
     // Deduct credits
-    await deductCredits(
+    const deductResult = await deductCredits(
       session.user.id,
       FEATURE_COSTS.IMAGE_GENERATION,
       'ساخت تصویر با DALL-E'
     );
+
+    if (!deductResult.success) {
+      console.error('Failed to deduct credits:', deductResult.error);
+    }
 
     return NextResponse.json({
       success: true,

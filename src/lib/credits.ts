@@ -37,19 +37,27 @@ export async function addCredits(
   }
 }
 
+export type DeductResult = 
+  | { success: true }
+  | { success: false; error: 'user_not_found' | 'insufficient_credits' | 'transaction_failed' };
+
 export async function deductCredits(
   userId: string,
   amount: number,
   description?: string
-): Promise<boolean> {
+): Promise<DeductResult> {
   try {
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: { credits: true },
     });
 
-    if (!user || user.credits < amount) {
-      return false;
+    if (!user) {
+      return { success: false, error: 'user_not_found' };
+    }
+
+    if (user.credits < amount) {
+      return { success: false, error: 'insufficient_credits' };
     }
 
     await prisma.$transaction([
@@ -66,10 +74,10 @@ export async function deductCredits(
         },
       }),
     ]);
-    return true;
+    return { success: true };
   } catch (error) {
     console.error('Deduct credits error:', error);
-    return false;
+    return { success: false, error: 'transaction_failed' };
   }
 }
 

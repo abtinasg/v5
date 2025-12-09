@@ -28,20 +28,11 @@ export async function POST(request: NextRequest) {
     });
 
     // Send OTP via Kavenegar
-    const sent = await sendOtp(normalizedPhone, code);
-
-    if (!sent) {
-      // In development, log the code
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`OTP for ${normalizedPhone}: ${code}`);
-      }
-    }
+    await sendOtp(normalizedPhone, code);
 
     return NextResponse.json({
       success: true,
       message: 'کد تایید ارسال شد',
-      // Only in development
-      ...(process.env.NODE_ENV === 'development' && { code }),
     });
   } catch (error) {
     console.error('OTP send error:', error);

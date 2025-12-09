@@ -90,11 +90,15 @@ export async function POST(request: NextRequest) {
     });
 
     // Deduct credits
-    await deductCredits(
+    const deductResult = await deductCredits(
       session.user.id,
       requiredCredits,
       `پیام چت با مدل ${model}`
     );
+
+    if (!deductResult.success) {
+      console.error('Failed to deduct credits:', deductResult.error);
+    }
 
     return NextResponse.json({
       success: true,
