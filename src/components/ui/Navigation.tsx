@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 
 const navItems = [
-  { href: '/chat', label: 'چت', icon: MessageSquare },
+  { href: '/', label: 'چت', icon: MessageSquare },
   { href: '/images', label: 'عکس', icon: Image },
   { href: '/videos', label: 'ویدیو', icon: Video },
   { href: '/music', label: 'موسیقی', icon: Music },
@@ -60,7 +60,7 @@ export function TopNav({ credits = 0 }: { credits?: number }) {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-b border-gray-200 dark:border-gray-800 safe-area-top">
       <div className="flex items-center justify-between px-4 py-3">
-        <Link href="/chat" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
             <span className="text-white text-sm font-bold">AI</span>
           </div>
