@@ -1,14 +1,28 @@
 import OpenAI from 'openai';
 
-// OpenRouter uses OpenAI-compatible API
-export const openrouter = new OpenAI({
-  baseURL: 'https://openrouter.ai/api/v1',
-  apiKey: process.env.OPENROUTER_API_KEY,
-  defaultHeaders: {
-    'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
-    'X-Title': process.env.NEXT_PUBLIC_APP_NAME || 'AI Hub Iran',
+// Lazy-load OpenRouter client to avoid issues during build time
+let _openrouter: OpenAI | null = null;
+
+export function getOpenRouter(): OpenAI {
+  if (!_openrouter) {
+    _openrouter = new OpenAI({
+      baseURL: 'https://openrouter.ai/api/v1',
+      apiKey: process.env.OPENROUTER_API_KEY || '',
+      defaultHeaders: {
+        'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+        'X-Title': process.env.NEXT_PUBLIC_APP_NAME || 'AI Hub Iran',
+      },
+    });
+  }
+  return _openrouter;
+}
+
+// For backward compatibility
+export const openrouter = {
+  get chat() {
+    return getOpenRouter().chat;
   },
-});
+};
 
 // Model mappings for OpenRouter
 export const AI_MODELS = {

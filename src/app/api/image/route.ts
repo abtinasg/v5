@@ -5,9 +5,16 @@ import prisma from '@/lib/prisma';
 import { deductCredits, getUserCredits, FEATURE_COSTS } from '@/lib/credits';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Lazy-load OpenAI client
+let _openai: OpenAI | null = null;
+function getOpenAI(): OpenAI {
+  if (!_openai) {
+    _openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY || '',
+    });
+  }
+  return _openai;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,7 +37,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate image with DALL-E
-    const response = await openai.images.generate({
+    const response = await getOpenAI().images.generate({
       model: 'dall-e-3',
       prompt,
       n: 1,
