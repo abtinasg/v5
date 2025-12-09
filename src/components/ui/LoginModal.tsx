@@ -57,8 +57,8 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!code || code.length < 4) {
-      toast.error('کد تایید معتبر نیست');
+    if (!code || code.length !== 6) {
+      toast.error('کد ۶ رقمی را وارد کنید');
       return;
     }
 
@@ -179,10 +179,11 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
             <form onSubmit={handleVerify} className="space-y-6">
               <Input
                 type="text"
-                placeholder="کد ۴ رقمی"
+                inputMode="numeric"
+                placeholder="۶ رقم"
                 value={code}
-                onChange={(e) => setCode(e.target.value)}
-                className="text-center text-2xl tracking-[1rem]"
+                onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+                className="text-center text-2xl tracking-widest"
                 maxLength={6}
                 dir="ltr"
               />

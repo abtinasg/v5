@@ -17,6 +17,13 @@ interface Message {
   content: string;
 }
 
+const QUICK_PROMPTS = [
+  'یک ایمیل رسمی بنویس',
+  'کد پایتون بزن',
+  'ترجمه کن به انگلیسی',
+  'ایده‌های کسب و کار',
+];
+
 export default function Home() {
   const { data: session, status } = useSession();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -282,12 +289,7 @@ export default function Home() {
                   
                   {/* Quick prompts */}
                   <div className="grid grid-cols-2 gap-2 mt-6 w-full max-w-sm">
-                    {[
-                      'یک ایمیل رسمی بنویس',
-                      'کد پایتون بزن',
-                      'ترجمه کن به انگلیسی',
-                      'ایده‌های کسب و کار',
-                    ].map((prompt) => (
+                    {QUICK_PROMPTS.map((prompt) => (
                       <button
                         key={prompt}
                         onClick={() => handleSend(prompt)}
