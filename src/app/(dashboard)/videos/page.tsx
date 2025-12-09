@@ -8,13 +8,33 @@ import toast from 'react-hot-toast';
 
 export default function VideosPage() {
   const [prompt, setPrompt] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
     
-    // TODO: Implement video generation API
-    toast.success('درخواست ساخت ویدیو ثبت شد. پس از آماده شدن اطلاع داده می‌شود.');
-    setPrompt('');
+    setIsGenerating(true);
+    try {
+      const response = await fetch('/api/video', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        toast.success(data.video.message || 'ویدیو در حال ساخت است');
+        setPrompt('');
+      } else {
+        toast.error(data.error || 'خطا در ساخت ویدیو');
+      }
+    } catch (error) {
+      console.error('Video generation error:', error);
+      toast.error('خطا در ارتباط با سرور');
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
@@ -29,21 +49,21 @@ export default function VideosPage() {
         </p>
       </div>
 
-      {/* Coming Soon Banner */}
+      {/* Info Banner */}
       <Card variant="gradient" className="p-6 text-center">
         <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <Video className="w-8 h-8 text-white" />
         </div>
         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-          به زودی!
+          ساخت ویدیو با هوش مصنوعی
         </h2>
         <p className="text-gray-600 dark:text-gray-300">
-          قابلیت ساخت ویدیو با هوش مصنوعی به زودی راه‌اندازی می‌شود
+          ویدیوهای خود را با توضیحات متنی بسازید
         </p>
       </Card>
 
       {/* Generator Form */}
-      <Card className="p-4 opacity-75">
+      <Card className="p-4">
         <div className="space-y-4">
           <textarea
             value={prompt}
@@ -51,17 +71,26 @@ export default function VideosPage() {
             placeholder="مثال: یک موشک در حال پرواز به سمت ماه..."
             className="w-full h-24 px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
             dir="rtl"
-            disabled
+            disabled={isGenerating}
           />
 
           <Button
             onClick={handleGenerate}
-            disabled={true}
+            disabled={isGenerating || !prompt.trim()}
             className="w-full"
             size="lg"
           >
-            <Clock className="w-5 h-5 ml-2" />
-            به زودی (۵۰ کردیت)
+            {isGenerating ? (
+              <>
+                <Clock className="w-5 h-5 ml-2 animate-spin" />
+                در حال ساخت...
+              </>
+            ) : (
+              <>
+                <Video className="w-5 h-5 ml-2" />
+                ساخت ویدیو (۵۰ کردیت)
+              </>
+            )}
           </Button>
         </div>
       </Card>

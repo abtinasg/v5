@@ -21,6 +21,7 @@ model User {
   images      GeneratedImage[]
   videos      GeneratedVideo[]
   musics      GeneratedMusic[]
+  voices      GeneratedVoice[]
   transactions CreditTransaction[]
   otpCodes    OtpCode[]
 }
@@ -102,6 +103,7 @@ enum AgentType {
   FINANCIAL
   TRANSLATOR
   MARKETING
+  FANTUBE
 }
 
 // Generated Images
@@ -135,6 +137,19 @@ model GeneratedMusic {
   userId    String
   prompt    String
   musicUrl  String
+  model     String
+  status    GenerationStatus @default(PENDING)
+  createdAt DateTime @default(now())
+  
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+// Generated Voice/Audio
+model GeneratedVoice {
+  id        String   @id @default(cuid())
+  userId    String
+  text      String
+  voiceUrl  String
   model     String
   status    GenerationStatus @default(PENDING)
   createdAt DateTime @default(now())

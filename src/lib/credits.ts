@@ -103,4 +103,5 @@ export const FEATURE_COSTS = {
   IMAGE_GENERATION: 20, // per image
   VIDEO_GENERATION: 50, // per video
   MUSIC_GENERATION: 30, // per music
+  VOICE_GENERATION: 10, // per voice
 };
