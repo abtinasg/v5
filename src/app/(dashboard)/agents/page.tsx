@@ -8,7 +8,8 @@ import {
   TrendingUp, 
   Languages, 
   Megaphone,
-  ArrowLeft 
+  ArrowLeft,
+  Youtube
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 
@@ -60,6 +61,14 @@ const agents = [
     icon: Megaphone,
     color: 'from-red-500 to-pink-500',
     examples: ['کمپین تبلیغاتی طراحی کن', 'کپشن اینستاگرام بنویس'],
+  },
+  {
+    id: 'FANTUBE',
+    name: 'فان‌تیوب',
+    description: 'ایجاد محتوای ویدیویی، پیشنهاد عنوان و توضیحات',
+    icon: Youtube,
+    color: 'from-rose-500 to-red-500',
+    examples: ['ایده ویدیو برای یوتیوب', 'عنوان جذاب پیشنهاد بده'],
   },
 ];
 
